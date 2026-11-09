@@ -18,4 +18,4 @@ For a separate API host, copy `.env.example` to `.env.local` and set `VITE_API_B
 
 - `api(path, options)` in `src/shared/api/client.js` returns the response's `data` field and throws `ApiError` with `status` on failure.
 - `useAuth()` in `src/shared/auth/AuthContext.jsx` exposes `user`, `loading`, `signIn(authData)`, and `signOut()`.
-- Auth and spot screens belong in `src/features/auth` and `src/features/spots`; booking screens belong in `src/features/bookings`.
+- Work is handed off in two stages: basic features first, then UX and edge-case improvements. See `FRONTEND_TASKS.md` for file ownership and acceptance criteria.
