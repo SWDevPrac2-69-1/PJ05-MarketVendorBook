@@ -11,7 +11,8 @@ A RESTful backend API for browsing night market vendor spots and booking a selli
 - JWT bearer-token authentication through the Authorization header
 - Roles: `admin` and `member`
 - Protected routes and role-based authorization
-- Registration accepts either role, following PJ01-SportFacility through PJ04-CarServiceAppoint
+- Public registration creates `member` accounts only; `admin` accounts are provisioned separately (for example, through a Back Office)
+- Admins sign in through the same login page as members; their `role` controls access to spot management and all bookings
 - Registration and login return `data.token` and set an HTTP-only cookie; authentication middleware reads the bearer header only
 - Logout clears the cookie; clients must discard their bearer token, which remains valid until expiration
 
@@ -29,7 +30,8 @@ A RESTful backend API for browsing night market vendor spots and booking a selli
 
 ### Bookings
 
-- Members book an active spot by its ID, selecting a booking date and describing the product type to sell
+- Members book an active spot by its ID, selecting a booking date, naming the shop, and describing the product type to sell
+- `storeName` belongs to each booking, so a member can use different shop names for different spots
 - Each booking references one spot and the authenticated member
 - Product type is free text, for example `Food and drinks` or `Handmade crafts`
 - Members can view, edit, and delete their own bookings
@@ -104,7 +106,7 @@ server.js        Application entry point
 
    ```dotenv
    NODE_ENV=development
-   PORT=5000
+   PORT=5001
    MONGO_URI=
    JWT_SECRET=<your-secret>
    JWT_EXPIRE=30d
@@ -121,6 +123,12 @@ server.js        Application entry point
 Use `npm start` to run without Nodemon. If PowerShell blocks `npm.ps1`, use `npm.cmd ci` and `npm.cmd run dev`.
 
 The API runs on `http://localhost:5001` with the example configuration (port 5000 is occupied by macOS Control Center on this machine). Change `PORT` if needed. With `MONGO_URI` blank, welcome, Swagger UI, and health endpoints work; database-backed APIs require a configured connection. Allow Mongoose to create the booking uniqueness index when connecting to a new database. Keep `config/config.env` private; it is not committed.
+
+### Admin account
+
+The currently configured MongoDB Atlas connection has an admin account with email `admin@pj05.local`. The connection URI omits a database name, so MongoDB uses the `test` database. Sign in through the frontend's `/login` page with the password shared separately; the password is not stored in this repository.
+
+This account is database data, not a seed included in the project. A new database or a different `MONGO_URI` will not have it automatically. Provision admins outside public registration through the `User` model (or a Back Office that uses the same password hashing flow). The public `/api/v1/auth/register` endpoint always creates a `member` and rejects attempts to register an `admin`.
 
 ## API Routes
 
@@ -167,6 +175,7 @@ Successful responses use `{ success: true, data }`, with `count` for lists. Regi
 {
   "spot": "<spot MongoDB ID>",
   "bookingDate": "2026-12-01",
+  "storeName": "Moonlight Snacks",
   "productType": "Food and drinks"
 }
 ```
@@ -184,7 +193,7 @@ To reschedule, use `PUT /api/v1/bookings/:id`:
 
 To move to a different spot, include `spot` with the new active spot ID. The old spot/date is released after a successful move.
 
-Send `Authorization: Bearer <JWT>` with protected requests. In Swagger, click **Authorize** and paste `data.token` without the `Bearer ` prefix. To try the complete workflow, register an admin and a member, create spots as admin, then book and manage them as member.
+Send `Authorization: Bearer <JWT>` with protected requests. In Swagger, click **Authorize** and paste `data.token` without the `Bearer ` prefix. To try the complete workflow, sign in with the provisioned admin account to create spots, register a member, then book and manage spots as that member.
 
 ## Checks
 

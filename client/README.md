@@ -1,6 +1,10 @@
 # Frontend starter
 
-React + Vite starter for the Night Market Vendor Booking frontend. The current auth, spot, and booking pages are placeholders assigned in [FRONTEND_TASKS.md](../FRONTEND_TASKS.md).
+React + Vite frontend for Night Market Vendor Booking. The basic auth, spot, and booking flows are implemented. [FRONTEND_TASKS.md](../FRONTEND_TASKS.md) describes the handoff and additional work.
+
+Public signup creates a member account only; admin accounts are provisioned separately. Members enter a shop name when booking a spot.
+
+The configured Atlas database already has an admin account; see the [root README](../README.md#admin-account). Admins use the same login page as members.
 
 ## Run locally
 

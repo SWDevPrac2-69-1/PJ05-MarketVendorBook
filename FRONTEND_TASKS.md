@@ -2,6 +2,8 @@
 
 โครง React + Vite อยู่ใน `client/` และ backend API อยู่ใน repository นี้ แผนนี้แบ่งงานตาม **ลำดับการส่งต่อ**: สมาชิก 1 ทำความสามารถหลักให้ใช้งานได้ครบ แล้วสมาชิก 2 รับช่วงเพิ่มคุณภาพและรายละเอียดของ frontend โดยไม่เปลี่ยนขอบเขตของโจทย์
 
+**ข้อตกลงล่าสุดเรื่องบัญชีและร้าน:** public registration สร้างได้เฉพาะ `member` ส่วน `admin` ถือว่าสร้างไว้ล่วงหน้าผ่าน Back Office ชื่อร้าน (`storeName`) ระบุตอนจองแต่ละล็อค ไม่ได้เก็บในบัญชี ข้อนี้ใช้แทนข้อความเดิมใน project brief ที่อนุญาตเลือก role ตอนสมัคร
+
 ## ความหมายของ Basic และ Additional
 
 - **Basic requirements:** ความสามารถและเงื่อนไขทั้งหมดใน `2026-PJ05-Init.md` ได้แก่ auth, สิทธิ์ `admin`/`member`, ดูและจัดการ spot, ดูและจัดการ booking, วันที่ไม่ย้อนหลัง, spot ไม่ซ้ำในวันเดียวกัน และสมาชิกไม่เกิน 3 spots ต่อวัน งานนี้ต้องใช้งานได้จริงผ่าน API
@@ -12,7 +14,7 @@
 
 1. **หน้าและเส้นทาง:** ใช้ `/login`, `/register`, `/spots`, `/spots/:id`, `/admin/spots/*`, `/bookings`, `/bookings/new`, `/bookings/:id` ถ้าต้องเพิ่มหรือเปลี่ยน route ให้แจ้งกันก่อน
 2. **API และ auth:** ใช้ `api(path, options)` จาก `client/src/shared/api/client.js` ซึ่งคืน `data` และโยน `ApiError` ที่มี `status`; ใช้ `useAuth()` สำหรับ `user`, `loading`, `signIn`, `signOut` Protected API ต้องส่ง Bearer token
-3. **รูปแบบข้อมูล:** ใช้ `_id` ของ spot/booking; request การจองใช้ `{ spot, bookingDate, productType }` โดย `bookingDate` เป็น `YYYY-MM-DD` ใน UTC และ response เป็น ISO timestamp ให้แสดงส่วนวันที่ของ UTC โดยไม่เลื่อนวันตาม timezone เครื่อง
+3. **รูปแบบข้อมูล:** ใช้ `_id` ของ spot/booking; request การจองใช้ `{ spot, bookingDate, storeName, productType }` โดย `bookingDate` เป็น `YYYY-MM-DD` ใน UTC และ response เป็น ISO timestamp ให้แสดงส่วนวันที่ของ UTC โดยไม่เลื่อนวันตาม timezone เครื่อง
 4. **จุดส่งต่องาน:** สมาชิก 1 ส่ง branch/PR ที่ basic flow ผ่าน พร้อมสรุป route, component และรายการที่ยังต้องปรับด้าน UI/กรณีขอบ; สมาชิก 2 เริ่มแก้ feature files หลังรวม PR นั้น หรือทำ mockup/CSS ในไฟล์ใหม่ระหว่างรอ
 5. **รูปแบบ UI:** ตกลงภาษา, wireframe คร่าว ๆ, สีและการใช้ component ร่วมกันก่อนเริ่มตกแต่ง เพื่อไม่ต้องแก้ markup ซ้ำมาก
 
@@ -20,10 +22,10 @@
 
 **เจ้าของงานจนถึงจุดส่งต่อ:** `client/src/App.jsx`, `client/src/features/**`, `client/src/shared/**`, `client/src/main.jsx`, `client/src/styles.css` และการตั้งค่าใน `client/`
 
-- [ ] Register ด้วย `name`, `email`, `tel`, `password`, `role`; login ด้วย email/password; เก็บ token จาก `data.token`, ตรวจ session ด้วย `/auth/me`, logout และเมนูตาม role
+- [ ] Register เฉพาะ `member` ด้วย `name`, `email`, `tel`, `password`; `admin` ถูกสร้างไว้ล่วงหน้าผ่าน Back Office; login ด้วย email/password; เก็บ token จาก `data.token`, ตรวจ session ด้วย `/auth/me`, logout และเมนูตาม role
 - [ ] หน้า public สำหรับรายการและรายละเอียด spot; หน้า admin สำหรับเพิ่ม แก้ไข และปิดใช้งาน spot ด้วยฟิลด์ที่ API กำหนด
 - [ ] หน้า member สำหรับสร้าง booking และดู/แก้ไข/ลบของตน; หน้า admin สำหรับดู/แก้ไข/ลบ booking ของทุกคน โดย admin สร้าง booking ไม่ได้
-- [ ] ฟอร์ม booking ส่ง spot `_id`, วันที่ `YYYY-MM-DD` และ `productType`; รองรับการเปลี่ยน spot/วัน และส่งเฉพาะฟิลด์ที่แก้ไขเมื่อเหมาะสม
+- [ ] ฟอร์ม booking ส่ง spot `_id`, วันที่ `YYYY-MM-DD`, `storeName` และ `productType`; รองรับการเปลี่ยน spot/วัน/ชื่อร้าน และส่งเฉพาะฟิลด์ที่แก้ไขเมื่อเหมาะสม
 - [ ] ป้องกัน action ตาม role, ตรวจ input ขั้นพื้นฐาน และแสดงข้อความเมื่อ API ปฏิเสธข้อมูลหรือการจอง (`400`, `401`, `403`, `404`, `409`) รวมถึงกรณี spot ถูกจองแล้วและเพดาน 3 spots ต่อวัน
 - [ ] ทำให้ flow หลักใช้งานได้กับ test MongoDB: admin สร้าง spot → member จอง → member แก้/ลบ → admin ดู/แก้/ลบ
 
@@ -52,5 +54,5 @@
 
 - Backend ใช้ `http://localhost:5001`, frontend ใช้ `http://localhost:3000`; Vite proxy `/api` ไป backend
 - คัดลอก `config/config.example.env` เป็น `config/config.env` แล้วตั้ง `MONGO_URI` สำหรับ test database; ไฟล์จริงถูก ignore โดย Git
-- เตรียมบัญชี `admin` และ `member`, spot อย่างน้อย 4 จุด, วันที่วันนี้และอนาคตหลายวัน
+- เตรียมบัญชี `admin` ที่สร้างไว้ล่วงหน้าและสมัครบัญชี `member` ผ่านหน้าเว็บ, spot อย่างน้อย 4 จุด, วันที่วันนี้และอนาคตหลายวัน
 - ตรวจ frontend ด้วย `npm run build` ใน `client/`; `npm test` ที่ root ตรวจ syntax backend เท่านั้น

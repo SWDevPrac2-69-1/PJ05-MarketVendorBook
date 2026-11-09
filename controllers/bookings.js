@@ -5,7 +5,7 @@ const populateBooking = (query) => query
   .populate("spot", "spotNumber zone spotSize locationDescription rentalFee isActive")
   .populate("user", "name email tel role");
 
-const parseBookingInput = ({ bookingDate, productType }) => {
+const parseBookingInput = ({ bookingDate, storeName, productType }) => {
   if (typeof bookingDate !== "string" || !/^\d{4}-\d{2}-\d{2}$/.test(bookingDate)) {
     return { error: "A valid bookingDate in YYYY-MM-DD format is required" };
   }
@@ -16,10 +16,13 @@ const parseBookingInput = ({ bookingDate, productType }) => {
   const today = new Date();
   today.setUTCHours(0, 0, 0, 0);
   if (date < today) return { error: "Booking date cannot be in the past" };
+  if (typeof storeName !== "string" || !storeName.trim() || storeName.trim().length > 100) {
+    return { error: "Store name must be a nonempty string of at most 100 characters" };
+  }
   if (typeof productType !== "string" || !productType.trim()) {
     return { error: "Product type must be a nonempty string" };
   }
-  return { bookingDate: date, productType: productType.trim() };
+  return { bookingDate: date, storeName: storeName.trim(), productType: productType.trim() };
 };
 
 const validateBooking = async ({ values, spotId, user, excludeId }) => {
@@ -91,6 +94,7 @@ exports.updateBooking = async (req, res, next) => {
     }
     const values = {
       bookingDate: req.body.bookingDate === undefined ? booking.bookingDate.toISOString().slice(0, 10) : req.body.bookingDate,
+      storeName: req.body.storeName === undefined ? booking.storeName : req.body.storeName,
       productType: req.body.productType === undefined ? booking.productType : req.body.productType,
     };
     const spotId = req.body.spot === undefined ? booking.spot.toString() : req.body.spot;

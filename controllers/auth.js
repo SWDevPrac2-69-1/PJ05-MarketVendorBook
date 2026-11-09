@@ -17,7 +17,10 @@ const sendTokenResponse = (user, statusCode, res) => {
 exports.register = async (req, res, next) => {
   try {
     const { name, email, tel, password, role } = req.body;
-    const user = await User.create({ name, email, tel, password, role });
+    if (role !== undefined && role !== "member") {
+      return res.status(403).json({ success: false, error: "Admin accounts cannot be self-registered" });
+    }
+    const user = await User.create({ name, email, tel, password, role: "member" });
     sendTokenResponse(user, 201, res);
   } catch (error) {
     next(error);
