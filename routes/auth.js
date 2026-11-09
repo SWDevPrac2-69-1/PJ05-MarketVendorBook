@@ -70,11 +70,8 @@
  *           },
  *           "role": {
  *             "type": "string",
- *             "enum": [
- *               "member",
- *               "admin"
- *             ],
- *             "default": "member"
+ *             "enum": ["member"],
+ *             "description": "Optional for legacy clients; public registration always creates a member."
  *           }
  *         },
  *         "required": [
@@ -276,6 +273,7 @@
  *         "required": [
  *           "spot",
  *           "bookingDate",
+ *           "storeName",
  *           "productType"
  *         ],
  *         "properties": {
@@ -290,6 +288,13 @@
  *             "format": "date",
  *             "example": "2026-12-01",
  *             "description": "YYYY-MM-DD; today or later in UTC."
+ *           },
+ *           "storeName": {
+ *             "type": "string",
+ *             "minLength": 1,
+ *             "maxLength": 100,
+ *             "example": "Moonlight Snacks",
+ *             "description": "Shop name for this booking."
  *           },
  *           "productType": {
  *             "type": "string",
@@ -313,6 +318,12 @@
  *             "format": "date",
  *             "example": "2026-12-01",
  *             "description": "YYYY-MM-DD; today or later in UTC."
+ *           },
+ *           "storeName": {
+ *             "type": "string",
+ *             "minLength": 1,
+ *             "maxLength": 100,
+ *             "example": "Moonlight Snacks"
  *           },
  *           "productType": {
  *             "type": "string",
@@ -339,6 +350,11 @@
  *             "format": "date-time",
  *             "readOnly": true,
  *             "description": "UTC midnight for the booking date."
+ *           },
+ *           "storeName": {
+ *             "type": "string",
+ *             "example": "Moonlight Snacks",
+ *             "description": "Shop name saved on this booking."
  *           },
  *           "productType": {
  *             "type": "string",
@@ -513,8 +529,8 @@
  *       "tags": [
  *         "Authentication"
  *       ],
- *       "summary": "Register a user",
- *       "description": "Public registration accepts member or admin roles and issues a JWT in data.token and an HTTP-only token cookie.",
+ *       "summary": "Register a member",
+ *       "description": "Public registration creates member accounts only. Admin accounts are provisioned separately. Returns a JWT in data.token and an HTTP-only token cookie.",
  *       "security": [],
  *       "responses": {
  *         "201": {
@@ -534,6 +550,12 @@
  *               }
  *             }
  *           }
+ *         },
+ *         "400": {
+ *           "$ref": "#/components/responses/Error400"
+ *         },
+ *         "403": {
+ *           "$ref": "#/components/responses/Error403"
  *         },
  *         "429": {
  *           "$ref": "#/components/responses/Error429"

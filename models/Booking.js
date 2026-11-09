@@ -5,6 +5,7 @@ const BookingSchema = new mongoose.Schema(
     spot: { type: mongoose.Schema.Types.ObjectId, ref: "Spot", required: true },
     user: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
     bookingDate: { type: Date, required: true },
+    storeName: { type: String, trim: true, maxlength: [100, "Store name cannot exceed 100 characters"] },
     productType: { type: String, required: [true, "Please add a product type"], trim: true },
   },
   { timestamps: true }
