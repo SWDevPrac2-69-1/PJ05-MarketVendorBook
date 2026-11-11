@@ -212,11 +212,49 @@
  * }
  */
 const express = require("express");
-const { getSpots, getSpot, createSpot, updateSpot, deleteSpot } = require("../controllers/spots");
+const { getSpots, getSpot, createSpot, updateSpot, deleteSpot, deleteZone } = require("../controllers/spots");
 const { protect, authorize } = require("../middleware/auth");
 const { serialize } = require("../middleware/serialize");
 
 const router = express.Router();
+/**
+ * @swagger
+ * /api/v1/spots/zones/{zone}:
+ *   delete:
+ *     tags: [Vendor spots]
+ *     summary: Remove a category and reassign all its spots (admin only)
+ *     description: Includes inactive spots. Spot IDs and bookings are preserved.
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: zone
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [replacementZone]
+ *             properties:
+ *               replacementZone:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: Category removed and spots reassigned
+ *       '400':
+ *         description: A different nonempty replacement category is required
+ *       '401':
+ *         description: Login required
+ *       '403':
+ *         description: Admin required
+ *       '404':
+ *         description: Category not found
+ */
+router.delete("/zones/:zone", protect, authorize("admin"), serialize(deleteZone));
 router.route("/").get(getSpots).post(protect, authorize("admin"), serialize(createSpot));
 router.route("/:id").get(getSpot).put(protect, authorize("admin"), serialize(updateSpot)).delete(protect, authorize("admin"), serialize(deleteSpot));
 

@@ -4,6 +4,9 @@ import { BrowserRouter } from "react-router-dom";
 import { AuthProvider } from "./shared/auth/AuthContext.jsx";
 import App from "./App.jsx";
 import "./styles.css";
+import "./market-club.css";
+import "./themes.css";
+import "./features/bookings/bookings.css";
 
 createRoot(document.getElementById("root")).render(
   <React.StrictMode>

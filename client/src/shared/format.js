@@ -1,5 +1,11 @@
 export function formatBaht(value) {
-  return new Intl.NumberFormat("th-TH", { style: "currency", currency: "THB", maximumFractionDigits: 0 }).format(value ?? 0);
+  return new Intl.NumberFormat("th-TH", { style: "currency", currency: "THB", minimumFractionDigits: 0, maximumFractionDigits: 2 }).format(value ?? 0);
+}
+
+export function formatSpotSize(value) {
+  const size = String(value ?? "").trim();
+  const dimensions = size.match(/^(\d+(?:\.\d+)?)\s*[x×*]\s*(\d+(?:\.\d+)?)\s*(?:m|เมตร)?$/i);
+  return dimensions ? `${Number(dimensions[1])} × ${Number(dimensions[2])} เมตร` : size;
 }
 
 export function utcDate(value) {

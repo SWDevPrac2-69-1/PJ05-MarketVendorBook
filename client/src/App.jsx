@@ -4,6 +4,7 @@ import RequireRole from "./shared/auth/RequireRole.jsx";
 import { AuthPage } from "./features/auth/AuthRoutes.jsx";
 import { AdminSpots, SpotDetail, SpotList } from "./features/spots/SpotRoutes.jsx";
 import BookingRoutes from "./features/bookings/BookingRoutes.jsx";
+import ThemeToggle from "./components/ThemeToggle.jsx";
 
 export default function App() {
   const { user, signOut } = useAuth();
@@ -15,9 +16,10 @@ export default function App() {
   }
 
   return <div className="app-shell">
-    <div className="topline"><span>BANGKOK AFTER DARK</span><span>MARKET OPEN • YOUR SPOT AWAITS</span><span>กรุงเทพฯ / NIGHT MARKET</span></div>
+    <a className="skip-link" href="#main-content">ข้ามไปเนื้อหาหลัก</a>
+    <div className="topline"><span>BANGKOK NIGHT MARKET</span><span>A LITTLE SPACE. A LOT OF POSSIBILITY.</span><ThemeToggle /></div>
     <header className="site-header">
-      <Link className="brand" to="/spots" aria-label="Night Market หน้าแรก"><span className="brand-symbol">✳</span><span>NIGHT<span className="brand-accent">MARKET</span><small>BANGKOK VENDOR SPOTS</small></span></Link>
+      <Link className="brand" to="/spots" aria-label="Night Market หน้าแรก"><span className="brand-symbol" aria-hidden="true">✳</span><span>night<span className="brand-accent">Market.</span><small>SMALL SHOPS. BIG ENERGY.</small></span></Link>
       <nav aria-label="เมนูหลัก" className="main-nav">
         <NavLink to="/spots" className={({ isActive }) => isActive ? "active" : ""}>สำรวจพื้นที่</NavLink>
         {user && <NavLink to="/bookings" className={({ isActive }) => isActive ? "active" : ""}>{user.role === "admin" ? "การจองทั้งหมด" : "การจองของฉัน"}</NavLink>}
@@ -35,6 +37,6 @@ export default function App() {
       <Route path="/bookings/*" element={<RequireRole><BookingRoutes /></RequireRole>} />
       <Route path="*" element={<div className="container not-found"><span className="eyebrow">404 / LOST IN THE CITY</span><h1>หาหน้านี้ไม่เจอ</h1><p>กลับไปเลือกพื้นที่ขายที่เหมาะกับคุณกัน</p><Link className="button button-primary" to="/spots">สำรวจพื้นที่</Link></div>} />
     </Routes></main>
-    <footer className="site-footer"><div className="container footer-inner"><span><span className="footer-spark">✳</span> NIGHTMARKET <small>Bangkok nights, your next opportunity.</small></span><span>ตลาดกลางคืนสำหรับผู้ขายทุกคน <span className="footer-dot">•</span> © {new Date().getFullYear()}</span></div></footer>
+    <footer className="site-footer"><div className="container footer-inner"><div className="footer-brand">night<span>Market</span><small>พื้นที่เล็ก ๆ จุดเริ่มต้นของเรื่องราวใหญ่ ๆ</small></div><div className="footer-note"><span>BANGKOK / YOUR SPACE, AFTER DARK.</span><p>ตลาดกลางคืนสำหรับผู้ขายทุกคน · © {new Date().getFullYear()}</p></div><span className="footer-monogram" aria-hidden="true">nm</span></div></footer>
   </div>;
 }
